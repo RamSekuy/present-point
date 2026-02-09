@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  name     String
+  password String
+
+  isVerify Boolean @default(false)
+  isAdmin  Boolean @default(false)
+
+  imageId String? @unique
+  image   Image?  @relation(fields: [imageId], references: [id])
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  attendances Attendance[]
+}
+
+model Image {
+  id    String @id @default(uuid())
+  image Bytes  @db.MediumBlob
+
+  user      User?
+  createdAt DateTime @default(now())
+}
+
+model Attendance {
+  id   String         @id @default(uuid())
+  type AttendanceType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  locationId String
+  location   Address  @relation(fields: [locationId], references: [id])
+  createdAt  DateTime
+}
+
+enum AttendanceType {
+  Enter
+  Out
+}
+
+model Address {
+  id        String @id @default(uuid())
+  longitude Float
+  latitude  Float
+  radius    Int
+
+  attendances Attendance[]
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

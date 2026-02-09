@@ -1,0 +1,75 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{subject}}</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        width: 600px;
+        margin: 0 auto;
+        border: 1px solid black;
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+
+      .header {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        margin: 0;
+      }
+
+      .content {
+        padding: 1rem;
+      }
+
+      .content .link span {
+        display: inline-block;
+        width: fit-content;
+      }
+
+      .content .link {
+        padding: 0.5rem;
+        background: green;
+        border-radius: 0.25rem;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+      }
+
+      .footer {
+        color: white;
+        background: black;
+        padding: 1rem 1.5rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header"><h1>PresentPoint</h1></div>
+
+      <div class="content">
+        <p>Dear, {{full_name}}</p>
+
+        <p>Thanks for register on <strong>PresentPoint</strong></p>
+        <p>Click link down below for verification your account</p>
+
+        <a class="link" href="{{baseUrl}}/auth/verify/{{token}}">
+          <span>Verify Account</span>
+        </a>
+      </div>
+
+      <div class="footer">
+        <p>&copy; 2026 PresentPoint. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
