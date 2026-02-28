@@ -6,8 +6,8 @@ import p from "path";
 import { userEmailTemplate } from "./email.template";
 import type { EmailTemplateType } from "./email.template";
 
-const user = z.string().optional().parse(process.env.NODEMAILER_USER);
-const pass = z.string().optional().parse(process.env.NODEMAILER_PASS);
+const user = z.string().parse(process.env.NODEMAILER_USER);
+const pass = z.string().parse(process.env.NODEMAILER_PASS);
 
 const transpoter = createTransport({
   service: "gmail",
