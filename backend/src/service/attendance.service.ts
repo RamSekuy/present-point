@@ -39,7 +39,7 @@ export class attendanceService {
 
     const { buffer } = await imageBuffer(req.file);
     const data: AttendanceCreateInput = {
-      image: { create: { image: buffer } },
+      image: { create: { image: buffer, type: "Attandance" } },
       user: { connect: { id: userId } },
       location: { connect: { id: locationId } },
       type: type,

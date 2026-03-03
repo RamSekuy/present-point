@@ -1,0 +1,10 @@
+npm run build
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../dist/src/generated/prisma"
+  binaryTargets = ["rhel-openssl-3.0.x"]
+}
+
+npx prisma generate
+vercel

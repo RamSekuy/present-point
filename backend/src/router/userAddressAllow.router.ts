@@ -5,10 +5,10 @@ import userMiddleware from "@/middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/", userMiddleware.aauthValidate, userAddressAllowController.add);
+router.post("/", userMiddleware.authValidate, userAddressAllowController.add);
 router.delete(
   "/:addressId",
-  userMiddleware.aauthValidate,
+  userMiddleware.authValidate,
   userAddressAllowController.delete,
 );
 

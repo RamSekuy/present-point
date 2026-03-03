@@ -67,8 +67,10 @@ export async function proxy(req: NextRequest) {
   // =========================
   // 3️⃣ Tidak ada token
   // =========================
+  console.log(req.url);
+  if (req.url.endsWith("/auth")) return NextResponse.next();
   return NextResponse.redirect(new URL("/auth", req.url));
 }
 export const config = {
-  matcher: ["/:path+"],
+  matcher: ["/auth", "/address/:path*", "/cuty/:path*", "/profile/:path*"],
 };
