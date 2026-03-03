@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Request, Router, Response } from "express";
 
 export class EntityRouter {
   public router: Router;

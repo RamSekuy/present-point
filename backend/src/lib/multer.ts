@@ -34,6 +34,5 @@ export function blobUploader() {
 }
 
 export function blobOptional() {
-  console.log("Multering...");
   return multer({ ...multerConfig(false) });
 }

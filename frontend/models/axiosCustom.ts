@@ -5,7 +5,7 @@ interface CustomResponse<T = any> {
   data: T;
 }
 
-export type TAxisCustomRes<T = any> = AxiosResponse<CustomResponse<T>>;
+export type TAxiosCustomRes<T = any> = AxiosResponse<CustomResponse<T>>;
 
 export interface AxiosCustom extends Axios {
   get<T = CustomResponse, R = AxiosResponse<T>, D = any>(

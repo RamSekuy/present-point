@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import LoginForm from "@/components/form/loginForm";
+import RegisterForm from "@/components/form/registerForm";
 
 export default async function AuthPage() {
   return (
@@ -101,12 +102,10 @@ export default async function AuthPage() {
                   <Card>
                     <CardHeader>
                       <CardTitle>Register your account</CardTitle>
-
-                      <CardDescription></CardDescription>
                     </CardHeader>
 
                     <CardContent>
-                      <LoginForm />
+                      <RegisterForm />
                     </CardContent>
 
                     <CardFooter></CardFooter>

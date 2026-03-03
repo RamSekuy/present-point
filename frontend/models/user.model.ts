@@ -1,5 +1,7 @@
 type TUser = {
   id: string;
   name: string;
-  role: "user" | "admin";
+  isAdmin: boolean;
+  email: string;
+  imageId: string;
 };

@@ -7,13 +7,16 @@ import useZodForm from "@/hooks/useZodForm";
 import { axiosCSR } from "@/lib/axios.csr";
 import { ButtonSubmit } from "../ui/submitButton";
 import { useRouter } from "next/navigation";
+import axiosToast from "@/lib/toast";
 
 export default function LoginForm() {
   const { push } = useRouter();
   const { form, submitHandler } = useZodForm<typeof loginSchema>(loginSchema, {
-    onSubmit: async (data) => {
-      await axiosCSR().post("/auth/v2", data);
-      push("/dashboard");
+    onSubmit: (data) => {
+      const p = axiosCSR().post("/auth/v2", data);
+      axiosToast(p, () => {
+        push("/dashboard");
+      });
     },
   });
 

@@ -1,10 +1,11 @@
 /** @format */
 import db from "@/lib/prisma";
+import { createAddressSchema } from "@/lib/schema/createAddress";
 import { querySchema } from "@/lib/schema/query.schema";
 import { stringSchema } from "@/lib/schema/string.schema";
 import { Request } from "express";
 
-export class AddressService {
+class AddressService {
   async getAll(req: Request) {
     const { take, skip, username } = querySchema.parse(req.query);
     return db.address.findMany({
@@ -23,9 +24,9 @@ export class AddressService {
 
   async create(req: Request) {
     // Validasi dan parsing body bisa disesuaikan dengan kebutuhan schema
-    const { longitude, latitude, radius } = req.body;
+    const data = createAddressSchema.parse(req.body);
     return db.address.create({
-      data: { longitude, latitude, radius },
+      data,
     });
   }
 

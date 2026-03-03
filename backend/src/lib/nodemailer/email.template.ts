@@ -1,3 +1,4 @@
+import { CORS } from "@/config/config";
 import { readFileSync } from "fs";
 import { compile } from "handlebars";
 import { z } from "zod";
@@ -7,8 +8,7 @@ export type EmailTemplateType = {
   full_name: string;
   token: string;
 };
-
-const baseUrl = z.string().optional().parse(process.env.CORS);
+const baseUrl = z.string().optional().parse(CORS);
 
 export const userEmailTemplate = (path: string, payload: EmailTemplateType) => {
   const source = readFileSync(path, "utf-8");

@@ -1,15 +1,13 @@
 /** @format */
 import { NextFunction, Request, Response } from "express";
-import locationService from "@/service/location.service";
+import addressService from "@/service/address.service";
 import { sendResponse } from "@/utils/sendResponse";
 
 export class AddressController {
-  private service = locationService;
-
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.service.getAll(req);
-      sendResponse(res, "get all locations", data);
+      const data = await addressService.getAll(req);
+      sendResponse(res, "Success Get Addresses", data);
     } catch (error) {
       next(error);
     }
@@ -17,8 +15,8 @@ export class AddressController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.service.getById(req);
-      sendResponse(res, "get location by id", data);
+      const data = await addressService.getById(req);
+      sendResponse(res, "Success Get Address", data);
     } catch (error) {
       next(error);
     }
@@ -26,8 +24,8 @@ export class AddressController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.service.create(req);
-      sendResponse(res, "location created", data);
+      const data = await addressService.create(req);
+      sendResponse(res, "Success Create Address", data);
     } catch (error) {
       next(error);
     }
@@ -35,8 +33,8 @@ export class AddressController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.service.delete(req);
-      sendResponse(res, "location deleted", data);
+      const data = await addressService.delete(req);
+      sendResponse(res, "Success Delete Address", data);
     } catch (error) {
       next(error);
     }

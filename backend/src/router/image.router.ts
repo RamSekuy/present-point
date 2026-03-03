@@ -7,7 +7,7 @@ export class ImageRouter extends EntityRouter {
     this.initializedRoutes();
   }
   private initializedRoutes(): void {
-    this.router.get("/:name", imageController.render);
+    this.router.get("/:imageId", imageController.render);
   }
 }
 

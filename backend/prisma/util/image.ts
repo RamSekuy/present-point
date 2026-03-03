@@ -14,8 +14,8 @@ function formatToMime(format?: string) {
   }
 }
 
-export async function createImage(filepath: string) {
-  const buffer = await fs.readFile(filepath);
+export async function createImage(filepath: `prisma/${string}`) {
+  const buffer = await fs.readFile("./" + filepath);
 
   const meta = await sharp(buffer).metadata();
   const mimetype = formatToMime(meta.format);

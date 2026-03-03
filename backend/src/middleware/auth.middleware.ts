@@ -1,7 +1,8 @@
 import authService from "@/service/auth.service";
 import { NextFunction, Request, Response } from "express";
+import { Err403 } from "@/class/customError";
 class UserMiddleware {
-  async aauthValidate(req: Request, _res: Response, next: NextFunction) {
+  async authValidate(req: Request, _res: Response, next: NextFunction) {
     try {
       const userData = await authService.validateAccessToken(req);
       req.user = userData;
@@ -11,7 +12,16 @@ class UserMiddleware {
     }
   }
 
-  async locationOwner(req: Request, _res: Response, next: NextFunction) {}
+  async AccountOwner(req: Request, _res: Response, next: NextFunction) {
+    try {
+      const userData = await authService.validateAccessToken(req);
+      const isOwner = req.params.userId === userData.id;
+      if (!isOwner) throw new Err403("Not Allow to Access");
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 const userMiddleware = new UserMiddleware();

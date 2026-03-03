@@ -15,7 +15,7 @@ const transpoter = createTransport({
 });
 
 export const verifyEmail = async (payload: EmailTemplateType, to: string) => {
-  const path = p.join(__dirname, "../templates", "verifyRegister.hbs");
+  const path = p.join(__dirname, "verifyRegister.hbs");
   const html = userEmailTemplate(path, payload);
   return await transpoter.sendMail({
     from: user,
@@ -31,6 +31,20 @@ export const verifyEmailFP = async (payload: EmailTemplateType, to: string) => {
     "../templates",
     "verifyEmailForgetPassword.hbs",
   );
+  const html = userEmailTemplate(path, payload);
+  return await transpoter.sendMail({
+    from: user,
+    to,
+    subject: payload.subject,
+    html,
+  });
+};
+
+export const verifyNewEmail = async (
+  payload: EmailTemplateType,
+  to: string,
+) => {
+  const path = p.join(__dirname, "verifyNewEmail.hbs");
   const html = userEmailTemplate(path, payload);
   return await transpoter.sendMail({
     from: user,

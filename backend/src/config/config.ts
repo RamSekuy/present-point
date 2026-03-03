@@ -3,8 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const PORT = process.env.PORT || 8000;
+export const CORS = process.env.CORS || "http://localhost:3000";
 export const corsOption: CorsOptions = {
-  origin: ["http://localhost:3000"],
+  origin: [CORS],
   credentials: true,
 };
 
