@@ -1,10 +1,12 @@
 /** @format */
-import { Err403 } from "@/class/customError";
+import { Err400, Err403 } from "@/class/customError";
 import { AttendanceCreateInput } from "@/generated/prisma/models";
 import db from "@/lib/prisma";
+import { coordinateSchema } from "@/lib/schema/coordinate";
 import { createAttendanceSchema } from "@/lib/schema/createAttendance.schema";
 import { querySchema } from "@/lib/schema/query.schema";
 import { imageBuffer } from "@/lib/sharp";
+import { getDistance } from "@/utils/getDistance";
 import { Request } from "express";
 
 export class attendanceService {
@@ -27,9 +29,10 @@ export class attendanceService {
     console.log("creating attendance");
     console.log("lng", req.body.longitude);
     console.log("lat", req.body.latitude);
-    const { addressId, type } = createAttendanceSchema.parse(req.body);
+    const { addressId, type, longitude, latitude } =
+      createAttendanceSchema.parse(req.body);
 
-    const isAllow = await db.address.findUnique({
+    const address = await db.address.findUnique({
       where: {
         id: addressId,
         userAddressAllow: { some: { userId: req.user.id } },
@@ -37,8 +40,16 @@ export class attendanceService {
       },
     });
 
-    if (!isAllow) throw new Err403("Not Allowed / Location Not Found");
-    console.log(req.file);
+    if (!address) throw new Err403("Not Allowed / Location Not Found");
+
+    const addressPosition = coordinateSchema.parse(address);
+    const distance1 = getDistance(addressPosition, { longitude, latitude });
+    const distance2 = getDistance({ longitude, latitude }, addressPosition);
+    console.log(distance1);
+    console.log(distance2);
+    const { radius } = address;
+    if (distance1 > radius) throw new Err400("GPS: Out of Range");
+
     const { buffer } = await imageBuffer(req.file);
     const data: AttendanceCreateInput = {
       image: { create: { image: buffer, type: "Attandance" } },

@@ -4,7 +4,6 @@ import { axiosCSR } from "@/lib/axios.csr";
 import axiosToast from "@/lib/toast";
 import { TUser } from "@/models/user.model";
 import { getCookie } from "cookies-next/client";
-import { Loader2 } from "lucide-react";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useRouter } from "next/navigation";
 import {
@@ -34,9 +33,7 @@ type UserProviderProps = { children: ReactNode; cookie: TCookie };
 export function UserProvider({ children, cookie }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const rauthToken = getCookie("rauth");
-  const aauthToken = getCookie("a1auth");
-  console.log(rauthToken);
-  const { push, refresh } = useRouter();
+  const { push } = useRouter();
   if (!rauthToken) {
     push("/auth");
     return <></>;
@@ -54,26 +51,18 @@ export function UserProvider({ children, cookie }: UserProviderProps) {
         const p = getAccessToken();
         if (e.message.toLowerCase().startsWith("jwt malformed"))
           (axiosToast(p, () => {
-            refresh();
+            getUserData().then((e) => setUser(e.data.data));
           }),
             e.message + ": Revalidating User...");
       });
   };
   useEffect(() => {
     updateUserData();
-  }, [aauthToken]);
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      {!user ? (
-        <div className="bg-black/80 h-dvh w-dvw flex justify-center items-center">
-          <div className="animate-spin duration-1000">
-            <Loader2 color="red" />
-          </div>
-        </div>
-      ) : (
-        children
-      )}
+      {!user ? <Loading label="Getting User Data" /> : children}
     </UserContext.Provider>
   );
 }
