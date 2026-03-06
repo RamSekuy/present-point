@@ -54,7 +54,6 @@ export class AuthService {
   async login(req: Request) {
     // schema validation
     const data = loginSchema.parse(req.body);
-    console.log(data);
     // check user in db
     const user = await db.user.findUnique({
       where: { email: data.email },

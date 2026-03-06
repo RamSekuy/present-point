@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { axiosSSR } from "@/lib/axios.ssr";
-import { getCookie } from "cookies-next";
 
 const adminOnly = ["/address"];
 
 export async function proxy(req: NextRequest) {
-  const accessToken = await getCookie("aauth");
-  const refreshToken = await getCookie("rauth");
+  const accessToken = req.cookies.get("aauth")?.value;
+  const refreshToken = req.cookies.get("rauth")?.value;
   const api = axiosSSR();
   // =========================
   // 1️⃣ Jika ada access token

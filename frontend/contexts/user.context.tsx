@@ -3,7 +3,6 @@ import Loading from "@/components/loading";
 import { axiosCSR } from "@/lib/axios.csr";
 import axiosToast from "@/lib/toast";
 import { TUser } from "@/models/user.model";
-import { getCookie } from "cookies-next/client";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useRouter } from "next/navigation";
 import {
@@ -12,6 +11,7 @@ import {
   useState,
   ReactNode,
   useEffect,
+  use,
 } from "react";
 
 type User = TUser;
@@ -32,15 +32,13 @@ type UserProviderProps = { children: ReactNode; cookie: TCookie };
 
 export function UserProvider({ children, cookie }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const rauthToken = getCookie("rauth");
+  const c = use(cookie);
+  const rauthToken = c.rauth?.value;
+  const aauthToken = c.aauth?.value;
   const { push } = useRouter();
-  if (!rauthToken) {
-    push("/auth");
-    return <></>;
-  }
 
   const updateUserData = async () => {
-    const getUserData = async () => await axiosCSR().get("/auth/me");
+    const getUserData = async () => await axiosCSR(aauthToken).get("/auth/me");
     const getAccessToken = async () =>
       await axiosCSR().post("/auth/v0", undefined, {
         headers: { Authorization: `Bearer ${rauthToken}` },
@@ -48,16 +46,15 @@ export function UserProvider({ children, cookie }: UserProviderProps) {
     getUserData()
       .then((e) => setUser(e.data.data))
       .catch((e: Error) => {
-        const p = getAccessToken();
         if (e.message.toLowerCase().startsWith("jwt malformed"))
-          (axiosToast(p, () => {
+          (axiosToast(getAccessToken(), () => {
             getUserData().then((e) => setUser(e.data.data));
           }),
             e.message + ": Revalidating User...");
       });
   };
   useEffect(() => {
-    updateUserData();
+    rauthToken ? updateUserData() : push("/auth");
   }, []);
 
   return (

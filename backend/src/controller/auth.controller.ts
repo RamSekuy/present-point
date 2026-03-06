@@ -13,11 +13,11 @@ export class AuthController {
   private service = authService;
   private createCookieOpt = (minutes = 15): CookieOptions => ({
     expires: new Date(Date.now() + minutes * 60 * 1000),
-    // domain: DOMAIN
-    //   ? DOMAIN
-    //   : CORS.startsWith("https")
-    //     ? "." + new URL(CORS).hostname.split(".").slice(-3).join(".")
-    //     : undefined,
+    domain: DOMAIN
+      ? DOMAIN
+      : CORS.startsWith("https")
+        ? "." + new URL(CORS).hostname.split(".").slice(-3).join(".")
+        : undefined,
     ...cookieOption,
   });
 
@@ -32,12 +32,10 @@ export class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("login in process");
       const token = await this.service.login(req);
       const { accessToken, refreshToken } = token;
       res.cookie("rauth", refreshToken, this.createCookieOpt(60 * 24));
       res.cookie("aauth", accessToken, this.createCookieOpt());
-      console.log("login Success");
       sendResponse(res, "login successful", token);
     } catch (error) {
       next(error);
