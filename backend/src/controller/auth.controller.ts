@@ -1,10 +1,21 @@
-import { NextFunction, Request, Response } from "express";
+import { CookieOptions, NextFunction, Request, Response } from "express";
 import { sendResponse } from "../utils/sendResponse";
 import authService from "@/service/auth.service";
+import { CORS } from "@/config/config";
+
+const cookieOption: CookieOptions = {
+  // secure: true,
+  // httpOnly: true,
+  // sameSite: "none",
+};
 
 export class AuthController {
   private service = authService;
-  private expire = (minutes = 15) => new Date(Date.now() + minutes * 60 * 1000);
+  private createCookieOpt = (minutes = 15): CookieOptions => ({
+    expires: new Date(Date.now() + minutes * 60 * 1000),
+    domain: "." + new URL(CORS).hostname.split(".").slice(-3).join("."),
+    ...cookieOption,
+  });
 
   async me(req: Request, res: Response, next: NextFunction) {
     try {
@@ -20,8 +31,8 @@ export class AuthController {
       console.log("login in process");
       const token = await this.service.login(req);
       const { accessToken, refreshToken } = token;
-      res.cookie("rauth", refreshToken, { expires: this.expire(60 * 24) });
-      res.cookie("aauth", accessToken, { expires: this.expire() });
+      res.cookie("rauth", refreshToken, this.createCookieOpt(60 * 24));
+      res.cookie("aauth", accessToken, this.createCookieOpt());
       console.log("login Success");
       sendResponse(res, "login successful", token);
     } catch (error) {
@@ -42,8 +53,8 @@ export class AuthController {
     try {
       const token = await this.service.refresh(req);
       const { accessToken, refreshToken } = token;
-      res.cookie("rauth", refreshToken, { expires: this.expire(60 * 24) });
-      res.cookie("aauth", accessToken, { expires: this.expire() });
+      res.cookie("rauth", refreshToken, this.createCookieOpt(60 * 24));
+      res.cookie("aauth", accessToken, this.createCookieOpt());
       sendResponse(res, "access token refreshed", token);
     } catch (error) {
       next(error);

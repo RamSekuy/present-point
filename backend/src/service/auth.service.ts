@@ -11,6 +11,7 @@ import { User } from "@/generated/prisma/client";
 import { imageBuffer } from "@/lib/sharp";
 import { userUpdateSchma } from "@/lib/schema/userUpdateSchema";
 import { v4 } from "uuid";
+import { omit } from "zod/mini";
 
 export class AuthService {
   private sendEmailValidation(
@@ -47,7 +48,7 @@ export class AuthService {
         },
       },
     });
-    this.sendEmailValidation(user);
+    this.sendEmailValidation(user as User);
     return user;
   }
 
@@ -58,6 +59,7 @@ export class AuthService {
     // check user in db
     const user = await db.user.findUnique({
       where: { email: data.email },
+      omit: { password: false },
     });
 
     if (!user) {
@@ -131,7 +133,10 @@ export class AuthService {
     });
 
     if (!data) throw new Err401("Invalid JWT Data");
-    const user = await db.user.findUnique({ where: { id: data.id } });
+    const user = await db.user.findUnique({
+      where: { id: data.id },
+      omit: { password: false },
+    });
     if (!user) throw new Err401("Invalid JWT User Data");
     return user;
   }
@@ -178,7 +183,7 @@ export class AuthService {
       where: { id: req.params.userId },
     });
     // reverify new email
-    this.sendEmailValidation(newData, "newEmail");
+    this.sendEmailValidation(newData as User, "newEmail");
     return { ...newData, password: undefined };
   }
 

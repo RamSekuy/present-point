@@ -31,11 +31,13 @@ export async function proxy(req: NextRequest) {
           !decoded.isAdmin &&
           adminOnly.some((url) => req.url.startsWith(url))
         ) {
+          req.cookies.delete("aauth");
           return NextResponse.redirect(new URL("/auth", req.url));
         }
         return NextResponse.next();
       }
 
+      req.cookies.delete("aauth");
       return NextResponse.redirect(new URL("/auth", req.url));
     } catch {
       return NextResponse.redirect(new URL("/auth", req.url));
@@ -52,14 +54,12 @@ export async function proxy(req: NextRequest) {
       });
 
       if (resp.status === 200) {
-        const response = NextResponse.next();
-        response.cookies.set("aauth", resp.data.data.accessToken, {
-          maxAge: 60 * 10,
-        });
-        return response;
+        return NextResponse.next();
       }
+      req.cookies.delete("rauth");
       return NextResponse.redirect(new URL("/auth", req.url));
     } catch {
+      req.cookies.delete("rauth");
       return NextResponse.redirect(new URL("/auth", req.url));
     }
   }
@@ -67,7 +67,6 @@ export async function proxy(req: NextRequest) {
   // =========================
   // 3️⃣ Tidak ada token
   // =========================
-  console.log(req.url);
   if (req.url.endsWith("/auth")) return NextResponse.next();
   return NextResponse.redirect(new URL("/auth", req.url));
 }

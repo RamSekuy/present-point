@@ -17,6 +17,19 @@ class UserMiddleware {
       const userData = await authService.validateAccessToken(req);
       const isOwner = req.params.userId === userData.id;
       if (!isOwner) throw new Err403("Not Allow to Access");
+      req.user = userData;
+      console.log("this is owner");
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async isAdmin(req: Request, _res: Response, next: NextFunction) {
+    try {
+      const userData = await authService.validateAccessToken(req);
+      if (!userData.isAdmin) throw new Err403("Not Admin");
+      req.user = userData;
       next();
     } catch (error) {
       next(error);

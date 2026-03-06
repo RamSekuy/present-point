@@ -1,4 +1,4 @@
-import { Err401 } from "@/class/customError";
+import { Err400 } from "@/class/customError";
 import sharp from "sharp";
 
 const mimeToSharp: Record<string, "jpeg" | "png" | "webp"> = {
@@ -9,10 +9,10 @@ const mimeToSharp: Record<string, "jpeg" | "png" | "webp"> = {
 };
 
 export async function imageBuffer(file?: Express.Multer.File) {
-  if (!file) throw new Err401("Invalid Image Input");
+  if (!file) throw new Err400("Invalid Image Input");
 
   const format = mimeToSharp[file.mimetype];
-  if (!format) throw new Err401("Unsupported image type");
+  if (!format) throw new Err400("Unsupported image type");
 
   const buffer = (await sharp(file.buffer)
     .toFormat(format)

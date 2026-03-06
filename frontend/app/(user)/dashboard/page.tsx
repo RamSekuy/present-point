@@ -5,6 +5,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { Username } from "@/contexts/user.context";
 import { CalendarMinus, History, IdCard, Scan, User } from "lucide-react";
 import Link from "next/link";
 
@@ -47,14 +48,16 @@ export default function Page() {
       <section className="bg-green-500 px-2 -translate-y-12 mb-12">
         <Card className="translate-y-16">
           <CardContent>
-            <p>Selamat Siang</p>
-            <h1 className="text-4x">USER</h1>
+            <p>Welcome</p>
+            <h1 className="font-bold">
+              <Username />
+            </h1>
           </CardContent>
           <CardFooter className="flex *:*:flex *:*:flex-col *:*:h-20 *:*:aspect-square text-center justify-evenly px-4">
             {menus.map((e, i) => (
-              <Link href={e.url} key={i}>
+              <Link href={e.url} key={i} className="group">
                 <Button className={e.className}>
-                  <e.icon />
+                  <e.icon className="group-hover:sacle-105 transition-all" />
                   {e.label}
                 </Button>
               </Link>

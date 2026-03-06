@@ -30,6 +30,7 @@ const multerConfig = (requireImg = true): multer.Options => ({
 });
 
 export function blobUploader() {
+  console.log("multering");
   return multer({ ...multerConfig() });
 }
 

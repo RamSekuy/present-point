@@ -3,17 +3,29 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { createContext, useContext, useState, ReactNode } from "react";
 
 type TModalContext = {
-  content?: ReactNode;
-  setContent: (c?: ReactNode) => void;
+  open: (content: ReactNode) => void;
+  close: () => void;
 };
 
 const ModalContext = createContext<TModalContext | undefined>(undefined);
 
 export function ModalProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<ReactNode | undefined>();
+  const [content, setContent] = useState<ReactNode>();
+  const [open, setOpen] = useState(false);
+
+  function handleOpen(content: ReactNode) {
+    setContent(content);
+    setOpen(true);
+  }
+
+  function handleClose() {
+    setOpen(false);
+    setContent(undefined);
+  }
+
   return (
-    <ModalContext.Provider value={{ content, setContent }}>
-      <Dialog>
+    <ModalContext.Provider value={{ open: handleOpen, close: handleClose }}>
+      <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
         {children}
         {content && (
           <DialogContent className="max-h-[90dvh] overflow-auto">
@@ -45,7 +57,7 @@ export function ModalTrigger({
     <DialogTrigger
       asChild
       onClick={() => {
-        modal.setContent(content);
+        modal.open(content);
       }}
     >
       {children}

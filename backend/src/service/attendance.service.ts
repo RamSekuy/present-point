@@ -24,24 +24,26 @@ export class attendanceService {
   }
 
   async create(req: Request) {
-    const userId = req.user.id;
-    const { locationId, type } = createAttendanceSchema.parse(req.body);
+    console.log("creating attendance");
+    console.log("lng", req.body.longitude);
+    console.log("lat", req.body.latitude);
+    const { addressId, type } = createAttendanceSchema.parse(req.body);
 
     const isAllow = await db.address.findUnique({
       where: {
-        id: locationId,
-        userAddressAllow: { some: { userId } },
+        id: addressId,
+        userAddressAllow: { some: { userId: req.user.id } },
         isDeleted: false,
       },
     });
 
     if (!isAllow) throw new Err403("Not Allowed / Location Not Found");
-
+    console.log(req.file);
     const { buffer } = await imageBuffer(req.file);
     const data: AttendanceCreateInput = {
       image: { create: { image: buffer, type: "Attandance" } },
-      user: { connect: { id: userId } },
-      location: { connect: { id: locationId } },
+      user: { connect: { id: req.user.id } },
+      location: { connect: { id: addressId } },
       type: type,
     };
 

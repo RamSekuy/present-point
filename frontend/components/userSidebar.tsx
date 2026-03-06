@@ -29,7 +29,7 @@ import { imgURL } from "../lib/imgURL";
 const menus = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "Scan", href: "/attendance/scan", icon: Scan },
-  { label: "Cuti", href: "/cuti", icon: CalendarMinus },
+  { label: "Cuti", href: "/cuty", icon: CalendarMinus },
   { label: "History", href: "/attendance", icon: History },
   { label: "ID Card", href: "/profile/id-card", icon: IdCard },
 ];

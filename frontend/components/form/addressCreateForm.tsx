@@ -9,14 +9,18 @@ import axiosToast from "@/lib/toast";
 import { Card, CardContent } from "../ui/card";
 import addressCreateSchema from "@/lib/schema/addressCreate.schema";
 import Map from "../map";
+import { useRouter } from "next/navigation";
 
 export default function AddressCreateForm() {
+  const { push } = useRouter();
   const { form, submitHandler } = useZodForm<typeof addressCreateSchema>(
     addressCreateSchema,
     {
       onSubmit: (data) => {
         const p = axiosCSR().post("/address/c", data);
-        axiosToast(p, () => {});
+        axiosToast(p, () => {
+          push("/address");
+        });
       },
     },
   );

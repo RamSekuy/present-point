@@ -1,15 +1,15 @@
-/** @format */
-import { Router } from "express";
-import userAddressAllowController from "@/controller/userAddressAllow.controller";
+import c from "@/controller/userAddressAllow.controller";
+import { EntityRouter } from "./entity.router";
 import userMiddleware from "@/middleware/auth.middleware";
 
-const router = Router();
+export class UserAddressAllowRouter extends EntityRouter {
+  constructor() {
+    super();
+    this.initializedRoutes();
+  }
+  private initializedRoutes(): void {
+    this.router.post("/:addressId", userMiddleware.isAdmin, c.create);
+  }
+}
 
-router.post("/", userMiddleware.authValidate, userAddressAllowController.add);
-router.delete(
-  "/:addressId",
-  userMiddleware.authValidate,
-  userAddressAllowController.delete,
-);
-
-export default router;
+export default new UserAddressAllowRouter();

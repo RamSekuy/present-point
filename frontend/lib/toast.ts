@@ -2,6 +2,7 @@ import { TAxiosCustomRes } from "@/models/axiosCustom";
 import { AxiosError } from "axios";
 import { CSSProperties } from "react";
 import { toast } from "sonner";
+import ServerLog from "./serverLog";
 
 function download(data: any) {
   const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
@@ -15,7 +16,8 @@ function download(data: any) {
 
 export default function axiosToast<T = any>(
   promise: Promise<TAxiosCustomRes<T>>,
-  onSuccess: (res: T) => void,
+  onSuccess: (res: T) => void = () => {},
+  loading: string = "Loading...",
 ) {
   toast.promise(promise, {
     success: (res) => {
@@ -25,12 +27,13 @@ export default function axiosToast<T = any>(
         message: res.data.message,
       };
     },
-    loading: "Loading...",
+    loading,
     error: (e) => {
       const style: CSSProperties = { backgroundColor: "red", color: "white" };
       if (e instanceof AxiosError) {
         const message = e.response?.data.message || "AxiosError";
         // download(e);
+        ServerLog(e);
         console.log(message);
         return {
           message,

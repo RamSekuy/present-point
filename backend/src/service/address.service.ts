@@ -1,4 +1,5 @@
 /** @format */
+import { Prisma } from "@/generated/prisma/client";
 import db from "@/lib/prisma";
 import { createAddressSchema } from "@/lib/schema/createAddress";
 import { querySchema } from "@/lib/schema/query.schema";
@@ -17,9 +18,11 @@ class AddressService {
 
   async getById(req: Request) {
     const id = stringSchema.parse(req.params.id);
-    return db.address.findUnique({
+    const opt: Prisma.AddressFindUniqueArgs = {
       where: { id, isDeleted: false },
-    });
+      include: { userAddressAllow: { include: { user: true } } },
+    };
+    return db.address.findUnique(opt);
   }
 
   async create(req: Request) {
