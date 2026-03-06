@@ -1,21 +1,23 @@
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import { sendResponse } from "../utils/sendResponse";
 import authService from "@/service/auth.service";
-import { CORS } from "@/config/config";
+import { CORS, DOMAIN } from "@/config/config";
 
 const cookieOption: CookieOptions = {
-  // secure: true,
-  // httpOnly: true,
-  // sameSite: "none",
+  secure: true,
+  httpOnly: true,
+  sameSite: "none",
 };
 
 export class AuthController {
   private service = authService;
   private createCookieOpt = (minutes = 15): CookieOptions => ({
     expires: new Date(Date.now() + minutes * 60 * 1000),
-    domain: CORS.startsWith("http")
-      ? undefined
-      : "." + new URL(CORS).hostname.split(".").slice(-3).join("."),
+    // domain: DOMAIN
+    //   ? DOMAIN
+    //   : CORS.startsWith("https")
+    //     ? "." + new URL(CORS).hostname.split(".").slice(-3).join(".")
+    //     : undefined,
     ...cookieOption,
   });
 
