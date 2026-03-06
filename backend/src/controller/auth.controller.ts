@@ -13,7 +13,9 @@ export class AuthController {
   private service = authService;
   private createCookieOpt = (minutes = 15): CookieOptions => ({
     expires: new Date(Date.now() + minutes * 60 * 1000),
-    domain: "." + new URL(CORS).hostname.split(".").slice(-3).join("."),
+    domain: CORS.startsWith("http")
+      ? undefined
+      : "." + new URL(CORS).hostname.split(".").slice(-3).join("."),
     ...cookieOption,
   });
 

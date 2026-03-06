@@ -11,7 +11,6 @@ import { User } from "@/generated/prisma/client";
 import { imageBuffer } from "@/lib/sharp";
 import { userUpdateSchma } from "@/lib/schema/userUpdateSchema";
 import { v4 } from "uuid";
-import { omit } from "zod/mini";
 
 export class AuthService {
   private sendEmailValidation(
