@@ -18,7 +18,6 @@ class UserMiddleware {
       const isOwner = req.params.userId === userData.id;
       if (!isOwner) throw new Err403("Not Allow to Access");
       req.user = userData;
-      console.log("this is owner");
       next();
     } catch (error) {
       next(error);

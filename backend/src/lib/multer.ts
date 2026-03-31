@@ -16,6 +16,7 @@ const multerConfig = (requireImg = true): multer.Options => ({
     cb: FileFilterCallback,
   ) => {
     try {
+      console.log("multering");
       requireImg ? imageFormatSchema.parse(file.mimetype) : null;
       return cb(null, true);
     } catch (error) {
@@ -30,7 +31,6 @@ const multerConfig = (requireImg = true): multer.Options => ({
 });
 
 export function blobUploader() {
-  console.log("multering");
   return multer({ ...multerConfig() });
 }
 

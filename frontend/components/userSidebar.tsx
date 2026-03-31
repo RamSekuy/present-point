@@ -20,9 +20,9 @@ import {
   History,
   IdCard,
   LocateFixed,
+  CalendarCheck2,
 } from "lucide-react";
 import { useUser } from "@/contexts/user.context";
-import { deleteCookie } from "cookies-next/client";
 import Image from "next/image";
 import { imgURL } from "../lib/imgURL";
 
@@ -33,21 +33,17 @@ const menus = [
   { label: "History", href: "/attendance", icon: History },
   { label: "ID Card", href: "/profile/id-card", icon: IdCard },
 ];
-const adminMenus = [{ label: "Address", href: "/address", icon: LocateFixed }];
+const adminMenus = [
+  { label: "Address", href: "/address", icon: LocateFixed },
+  { label: "Confirm Cuty", href: "/cuty/confirm", icon: CalendarCheck2 },
+];
 
 export default function UserSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, setUser } = useUser();
+  const { user, setUser, logout } = useUser();
   function isActive(href: string) {
     return pathname.endsWith(href);
-  }
-
-  async function handleLogout() {
-    deleteCookie("rauth");
-    deleteCookie("aauth");
-    setUser(null);
-    router.push("/auth");
   }
 
   return (
@@ -134,7 +130,7 @@ export default function UserSidebar() {
         <Button
           variant="destructive"
           className="w-full justify-start gap-2 hover:cursor-pointer hover:scale-103 transition"
-          onClick={handleLogout}
+          onClick={logout}
         >
           <LogOut className="h-4 w-4" />
           Logout

@@ -25,7 +25,7 @@ datasource db {
 model User {
   id       String @id @default(uuid())
   email    String @unique
-  name     String
+  name     String @unique
   password String
 
   isVerify Boolean @default(false)
@@ -38,6 +38,7 @@ model User {
   updatedAt        DateTime           @updatedAt
   attendances      Attendance[]
   userAddressAllow UserAddressAllow[]
+  cuties           Cuty[]
 }
 
 enum ImageType {
@@ -59,13 +60,13 @@ model Attendance {
   id   String         @id @default(uuid())
   type AttendanceType
 
-  userId     String
-  locationId String
-  imageId    String @unique
+  userId    String
+  addressId String
+  imageId   String @unique
 
-  user     User    @relation(fields: [userId], references: [id])
-  location Address @relation(fields: [locationId], references: [id])
-  image    Image   @relation(fields: [imageId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  address Address @relation(fields: [addressId], references: [id])
+  image   Image   @relation(fields: [imageId], references: [id])
 
   createdAt DateTime @default(now())
 }
@@ -99,4 +100,19 @@ model UserAddressAllow {
   address Address @relation(fields: [addressId], references: [id])
 
   @@id([userId, addressId])
+}
+
+model Cuty {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  startDate DateTime
+  endDate   DateTime
+
+  isConfirmed Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -1,5 +1,5 @@
 import { BASE_API_URL } from "@/config/config";
-import { AxiosCustom } from "@/models/axiosCustom";
+import { APIRouteUrl, AxiosCustom } from "@/models/axiosCustom";
 import axios, { AxiosRequestConfig } from "axios";
 import { cookies } from "next/headers";
 
@@ -20,13 +20,14 @@ async function instance() {
 
 export function axiosSSR() {
   // GET & DELETE
-  const f1 = (method: Method1) => (url: string, config?: AxiosRequestConfig) =>
-    instance().then((api) => api[method](url, config));
+  const f1 =
+    (method: Method1) => (url: APIRouteUrl, config?: AxiosRequestConfig) =>
+      instance().then((api) => api[method](url, config));
 
   // POST, PUT, PATCH
   const f2 =
     (method: Method2) =>
-    (url: string, data?: any, config?: AxiosRequestConfig) =>
+    (url: APIRouteUrl, data?: any, config?: AxiosRequestConfig) =>
       instance().then((api) => api[method](url, data, config));
 
   return {

@@ -3,6 +3,8 @@ import Loading from "@/components/loading";
 import { axiosCSR } from "@/lib/axios.csr";
 import axiosToast from "@/lib/toast";
 import { TUser } from "@/models/user.model";
+import { AxiosError } from "axios";
+import { deleteCookie } from "cookies-next/client";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useRouter } from "next/navigation";
 import {
@@ -19,6 +21,7 @@ type User = TUser;
 type UserContextType = {
   user: User | null;
   setUser: (user: User | null) => void;
+  logout: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -45,21 +48,39 @@ export function UserProvider({ children, cookie }: UserProviderProps) {
       });
     getUserData()
       .then((e) => setUser(e.data.data))
-      .catch((e: Error) => {
-        if (e.message.toLowerCase().startsWith("jwt malformed"))
+      .catch((e: AxiosError<{ message?: string }>) => {
+        const msg = e.response?.data.message || e.message;
+        const errMSG = ["jwt expired", "invalid token", "jwt malformed"];
+        const jwtMalformed = errMSG.some((m) => msg.toLowerCase().includes(m));
+        console.log(jwtMalformed);
+        if (jwtMalformed) {
           (axiosToast(getAccessToken(), () => {
-            getUserData().then((e) => setUser(e.data.data));
+            axiosToast(getUserData(), (e) => setUser(e.data?.data));
           }),
             e.message + ": Revalidating User...");
+        }
       });
   };
   useEffect(() => {
     rauthToken ? updateUserData() : push("/auth");
   }, []);
 
+  const logout = () => {
+    setUser(null);
+    deleteCookie("rauth");
+    deleteCookie("aauth");
+    push("/auth");
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {!user ? <Loading label="Getting User Data" /> : children}
+    <UserContext.Provider value={{ user, setUser, logout }}>
+      {!user ? (
+        <div className="w-full h-dvh flex justify-center items-center">
+          <Loading label="Getting User Data" />
+        </div>
+      ) : (
+        children
+      )}
     </UserContext.Provider>
   );
 }

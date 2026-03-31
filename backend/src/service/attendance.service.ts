@@ -15,7 +15,7 @@ export class attendanceService {
     const data = await db.attendance.findMany({
       where: {
         user: { name: { contains: username } },
-        location: {
+        address: {
           isDeleted: false,
         },
       },
@@ -26,9 +26,6 @@ export class attendanceService {
   }
 
   async create(req: Request) {
-    console.log("creating attendance");
-    console.log("lng", req.body.longitude);
-    console.log("lat", req.body.latitude);
     const { addressId, type, longitude, latitude } =
       createAttendanceSchema.parse(req.body);
 
@@ -45,8 +42,6 @@ export class attendanceService {
     const addressPosition = coordinateSchema.parse(address);
     const distance1 = getDistance(addressPosition, { longitude, latitude });
     const distance2 = getDistance({ longitude, latitude }, addressPosition);
-    console.log(distance1);
-    console.log(distance2);
     const { radius } = address;
     if (distance1 > radius) throw new Err400("GPS: Out of Range");
 
@@ -54,7 +49,7 @@ export class attendanceService {
     const data: AttendanceCreateInput = {
       image: { create: { image: buffer, type: "Attandance" } },
       user: { connect: { id: req.user.id } },
-      location: { connect: { id: addressId } },
+      address: { connect: { id: addressId } },
       type: type,
     };
 

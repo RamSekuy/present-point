@@ -117,7 +117,12 @@ export class AuthService {
         token.trim().split(" ").length === 2
       )
     ) {
-      throw new Err401("Invalid refresh token");
+      console.log(
+        token,
+        token?.startsWith("Bearer "),
+        token?.trim().split(" ").length,
+      );
+      throw new Err401("Invalid Token");
     }
     return token.split(" ")[1];
   }

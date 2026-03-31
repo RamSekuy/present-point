@@ -11,6 +11,7 @@ import addressRouter from "@router/address.router";
 import userRouter from "@router/user.router";
 import userAddressAllowRouter from "./router/userAddressAllow.router";
 import attendanceRouter from "@router/attendance.router";
+import cutyRouter from "./router/cuty.router";
 
 export class App {
   private app: Application;
@@ -26,6 +27,7 @@ export class App {
     this.app.use("/user", userRouter.getRouter);
     this.app.use("/image", imageRouter.getRouter);
     this.app.use("/address", addressRouter.getRouter);
+    this.app.use("/cuty", cutyRouter.getRouter);
     this.app.use("/attendance", attendanceRouter.getRouter);
     this.app.use("/userAddressAllow", userAddressAllowRouter.getRouter);
   }
@@ -73,6 +75,7 @@ export class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cors(corsOption));
+    this.app.options("*", cors(corsOption));
   }
   public start() {
     this.app.listen(PORT, () => {
