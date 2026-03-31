@@ -25,7 +25,7 @@ export default function UsersSelectTable({ addressId }: Props) {
   const { close } = useModal();
   const columns: ColumnDef<TUserAddress>[] = useMemo(() => {
     const addUser2Address = (userId: string) => {
-      const p = axiosCSR().post("/userAddressAllow/" + addressId, { userId });
+      const p = axiosCSR().post(`/userAddressAllow/${addressId}`, { userId });
       axiosToast(p, () => {
         close();
         refresh();

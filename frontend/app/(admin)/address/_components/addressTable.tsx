@@ -46,7 +46,7 @@ function DeletePrompt({ id }: { id: string }) {
   const { close } = useModal();
   const { refresh } = useRouter();
   const onClick = () => {
-    const p = axiosCSR().delete("/address/" + id);
+    const p = axiosCSR().delete(`/address/${id}`);
     axiosToast(p, () => {
       close();
       refresh();

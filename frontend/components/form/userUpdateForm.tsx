@@ -22,7 +22,7 @@ export default function UserUpdateForm() {
     userUpdateSchema,
     {
       onSubmit: (data) => {
-        const upload = axiosCSR().patch("/auth/" + user?.id, data, {
+        const upload = axiosCSR().patch(`/auth/${user?.id}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 

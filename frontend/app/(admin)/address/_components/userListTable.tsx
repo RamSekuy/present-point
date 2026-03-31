@@ -16,7 +16,7 @@ type Props = {
 export default function UserListTable({ users }: Props) {
   const { refresh } = useRouter();
   const removeUserFromAddress = (userId: string) => {
-    const p = axiosCSR().delete("/userAddressAllow/" + userId);
+    const p = axiosCSR().delete(`/userAddressAllow/${userId}`);
     axiosToast(p, () => {
       refresh();
     });

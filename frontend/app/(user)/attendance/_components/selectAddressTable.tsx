@@ -18,7 +18,7 @@ export default function SelectAddressTable({ onSelect }: Props) {
   useEffect(() => {
     if (!user) return;
     axiosCSR()
-      .get(`/address?userId='${user.id}'`)
+      .get(`/address?userId='${user.id}`)
       .then((res) => setAddresses(res.data.data))
       .finally(() => setLoading(false));
   }, [user]);

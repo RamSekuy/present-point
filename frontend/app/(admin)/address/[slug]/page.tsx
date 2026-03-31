@@ -6,7 +6,7 @@ import { TAddress } from "@/models/address.model";
 
 export default async function Page({ params }: TPageProps) {
   const id = (await params).slug;
-  const res = await axiosSSR().get("/address/" + id);
+  const res = await axiosSSR().get(`/address/${id}`);
   const address: TAddress & { userAddressAllow: { user: TUser }[] } =
     res.data.data;
 

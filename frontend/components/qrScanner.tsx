@@ -70,12 +70,12 @@ export default function QrScanner({
           return toast.error("Something Went Wrong on the Image");
         }
         const data = new FormData();
-        data.append("latitude",coords.latitude.toString())
-        data.append("longitude",coords.longitude.toString())
-        data.append("addressId",addressId)
-        data.append("image",image)
+        data.append("latitude", coords.latitude.toString());
+        data.append("longitude", coords.longitude.toString());
+        data.append("addressId", addressId);
+        data.append("image", image);
         const p = axiosCSR().post(
-          "/attendance/" + addressId + "/" + user?.id,
+          `/attendance/${addressId}/${user?.id}`,
           data,
           { headers: { "Content-Type": "multipart/form-data" } },
         );

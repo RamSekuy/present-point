@@ -13,7 +13,7 @@ type Route =
   | "/userAddressAllow"
   | "/cuty";
 
-export type APIRouteUrl = Route | `${Route}/${string}`;
+export type APIRouteUrl = Route | `${Route}/${string}` | `${Route}?${string}`;
 
 export type TAxiosCustomRes<T = any> = AxiosResponse<CustomResponse<T>>;
 
