@@ -15,6 +15,7 @@ export class cutyService {
       },
       take,
       skip,
+      include: { user: true },
     });
     return data;
   }
@@ -27,6 +28,7 @@ export class cutyService {
       },
       take,
       skip,
+      include: { user: true },
     });
     return data;
   }
@@ -42,6 +44,7 @@ export class cutyService {
         endDate,
         userId: req.user.id,
       },
+      include: { user: true },
     });
   }
 
@@ -49,7 +52,17 @@ export class cutyService {
     const { cutyId } = confirmCutySchema.parse(req.params);
     return db.cuty.update({
       where: { id: cutyId },
-      data: { isConfirmed: true },
+      data: { status: "Confirmed" },
+      include: { user: true },
+    });
+  }
+
+  async reject(req: Request) {
+    const { cutyId } = confirmCutySchema.parse(req.params);
+    return db.cuty.update({
+      where: { id: cutyId },
+      data: { status: "Rejected" },
+      include: { user: true },
     });
   }
 }

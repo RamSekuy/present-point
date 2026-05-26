@@ -7,22 +7,34 @@ import { ButtonSubmit } from "../ui/submitButton";
 import addressCreateSchema from "@/lib/schema/addressCreate.schema";
 import Map from "../map";
 import { useRouter } from "next/navigation";
-import { createAddressAction } from "@/actions/address.action";
+import { updateAddressAction } from "@/actions/address.action";
 import axiosToast from "@/lib/toast";
 import { MapPin, Info, Map as MapIcon, CircleDot } from "lucide-react";
 import { useWatch } from "react-hook-form";
 import { cn } from "@/lib/utils";
+import { TAddress } from "@/models/address.model";
 
-export default function AddressCreateForm() {
+interface AddressUpdateFormProps {
+  address: TAddress;
+}
+
+export default function AddressUpdateForm({ address }: AddressUpdateFormProps) {
   const { push } = useRouter();
   const { form, submitHandler } = useZodForm<typeof addressCreateSchema>(
     addressCreateSchema,
     {
       onSubmit: (data) => {
-        const p = createAddressAction(data);
+        const p = updateAddressAction(address.id, data);
         axiosToast(p, () => {
           push("/address");
         });
+      },
+      defaultValues: {
+        name: address.name,
+        detail: address.detail,
+        longitude: address.longitude,
+        latitude: address.latitude,
+        radius: address.radius,
       },
     },
   );
@@ -46,9 +58,9 @@ export default function AddressCreateForm() {
           <MapPin className="w-4 h-4 text-blue-600" />
         </div>
         <div>
-          <h2 className="text-sm font-medium text-zinc-900">New Address</h2>
+          <h2 className="text-sm font-medium text-zinc-900">Edit Address</h2>
           <p className="text-xs text-zinc-400">
-            Add a location with coordinates and coverage radius
+            Update location coordinates and coverage radius
           </p>
         </div>
       </div>
@@ -88,7 +100,13 @@ export default function AddressCreateForm() {
               icon={<MapIcon className="w-3 h-3" />}
               label="Pin location"
             />
-            <Map onCenterChange={coordinateHandler} />
+            <Map
+              onCenterChange={coordinateHandler}
+              position={{
+                lat: latitude || address.latitude,
+                lng: longitude || address.longitude,
+              }}
+            />
 
             {/* Hidden inputs for form registration */}
             <input
@@ -104,12 +122,12 @@ export default function AddressCreateForm() {
             <div className="grid grid-cols-2 gap-3">
               <CoordBadge
                 label="Longitude"
-                value={longitude}
+                value={longitude || address.longitude}
                 hasError={!!errors.longitude}
               />
               <CoordBadge
                 label="Latitude"
-                value={latitude}
+                value={latitude || address.latitude}
                 hasError={!!errors.latitude}
               />
             </div>
@@ -174,7 +192,7 @@ export default function AddressCreateForm() {
           </button>
           <ButtonSubmit
             isSubmitting={formState.isSubmitting}
-            label="Create address"
+            label="Update address"
             className="h-9 px-5 rounded-lg text-sm"
           />
         </div>
@@ -247,7 +265,7 @@ function CoordBadge({
             isEmpty ? "text-zinc-300" : "text-zinc-700",
           )}
         >
-          {isEmpty ? "—" : value.toFixed(6)}
+          {isEmpty ? "─" : value?.toFixed(6)}
         </p>
       </div>
     </div>

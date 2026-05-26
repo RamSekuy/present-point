@@ -9,9 +9,10 @@ export class attendancARouter extends EntityRouter {
   }
   private initializedRoutes(): void {
     this.router.get("/", userMiddleware.isAdmin, c.getAll);
-    this.router.get("/:userId", userMiddleware.AccountOwner, c.getOwn);
+    this.router.get("/me", userMiddleware.authValidate, c.getOwn);
     this.router.post("/:userId", userMiddleware.AccountOwner, c.create);
-    this.router.patch("/:cutyId", userMiddleware.isAdmin, c.confirm);
+    this.router.patch("/:cutyId/confirm", userMiddleware.isAdmin, c.confirm);
+    this.router.patch("/:cutyId/reject", userMiddleware.isAdmin, c.reject);
   }
 }
 

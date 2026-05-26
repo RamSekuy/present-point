@@ -2,6 +2,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import db from "@/lib/prisma";
 import { createAddressSchema } from "@/lib/schema/createAddress";
+import { updateAddressSchema } from "@/lib/schema/updateAddress";
 import { querySchema } from "@/lib/schema/query.schema";
 import { stringSchema } from "@/lib/schema/string.schema";
 import { Request } from "express";
@@ -38,6 +39,15 @@ class AddressService {
     return db.address.update({
       where: { id },
       data: { isDeleted: true },
+    });
+  }
+
+  async update(req: Request) {
+    const id = stringSchema.parse(req.params.id);
+    const data = updateAddressSchema.parse(req.body);
+    return db.address.update({
+      where: { id },
+      data,
     });
   }
 }

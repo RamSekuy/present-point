@@ -1,26 +1,16 @@
 "use client";
 
 import DataTable from "@/components/dataTable";
-import { useUser } from "@/contexts/user.context";
-import { axiosCSR } from "@/lib/axios.csr";
 import { TCuty } from "@/models/cuty.model.ts";
 import { ColumnDef } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { use } from "react";
 
-export default function CutyTable() {
-  const [cuty, setCuty] = useState<TCuty[]>([]);
-  const { user } = useUser();
-  const getData = async (): Promise<TCuty[]> =>
-    (await axiosCSR().get(`/cuty/${user?.id}`)).data.data;
-  useEffect(() => {
-    getData()
-      .then((e) => {
-        setCuty(e);
-      })
-      .catch((e) => {
-        if (e instanceof Error) alert(e.message);
-      });
-  }, [user?.id]);
+interface CutyTableProps {
+  cutyData: Promise<TCuty[]>;
+}
+
+export default function CutyTable({ cutyData }: CutyTableProps) {
+  const cuty = use(cutyData);
 
   const columns: ColumnDef<TCuty>[] = [
     {
@@ -39,13 +29,28 @@ export default function CutyTable() {
       cell: ({ row }) => new Date(row.original.endDate).toDateString(),
     },
     {
-      accessorKey: "isConfirmed",
-      header: "Confirmed On",
+      accessorKey: "status",
+      header: "Status",
       cell: ({ row }) => {
-        const { isConfirmed, updatedAt } = row.original;
-        const date = new Date(updatedAt).toDateString();
-        return isConfirmed ? <div>{date}</div> : <div>Not Yet</div>;
+        const status = row.original.status;
+        const statusColors: Record<string, string> = {
+          Pending: "bg-yellow-100 text-yellow-800",
+          Confirmed: "bg-green-100 text-green-800",
+          Rejected: "bg-red-100 text-red-800",
+        };
+        return (
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-semibold ${statusColors[status] || "bg-gray-100 text-gray-800"}`}
+          >
+            {status}
+          </span>
+        );
       },
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: ({ row }) => new Date(row.original.updatedAt).toDateString(),
     },
   ];
   return <DataTable columns={columns} data={cuty} />;

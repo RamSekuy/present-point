@@ -39,6 +39,15 @@ export class AddressController {
       next(error);
     }
   }
+
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await addressService.update(req);
+      sendResponse(res, "Success Update Address", data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AddressController();

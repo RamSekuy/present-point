@@ -4,7 +4,6 @@ import cutyCreateSchema from "@/lib/schema/cutyCreate.schema";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import useZodForm from "@/hooks/useZodForm";
-import { axiosCSR } from "@/lib/axios.csr";
 import { ButtonSubmit } from "../ui/submitButton";
 import { useRouter } from "next/navigation";
 import axiosToast from "@/lib/toast";
@@ -12,6 +11,7 @@ import { useUser } from "@/contexts/user.context";
 import SelectDate from "@/app/(user)/cuty/_components/selectDate";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
+import { createCutyAction } from "@/actions/cuty.action";
 
 export default function CutyCreateForm() {
   const { push } = useRouter();
@@ -20,7 +20,7 @@ export default function CutyCreateForm() {
     cutyCreateSchema,
     {
       onSubmit: (data) => {
-        const p = axiosCSR().post(`/cuty/${user?.id}`, data);
+        const p = createCutyAction(data);
         axiosToast(p, () => {
           push("/cuty");
         });

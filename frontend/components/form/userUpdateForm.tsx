@@ -2,34 +2,28 @@
 
 import { useState } from "react";
 import useZodForm from "@/hooks/useZodForm";
-import { axiosCSR } from "@/lib/axios.csr";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ButtonSubmit } from "@/components/ui/submitButton";
 import { CardContent } from "../ui/card";
 import Image from "next/image";
-import axiosToast from "@/lib/toast";
+import actionToast from "@/lib/toast";
 import userUpdateSchema from "@/lib/schema/userUpdate.schema";
-import { deleteCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
+import { objectToFormData } from "@/lib/schema/formData";
 import { useUser } from "@/contexts/user.context";
+import { userUpdate } from "@/actions/user.action";
 
 export default function UserUpdateForm() {
-  const { user, setUser } = useUser();
+  const { user } = useUser();
   const [preview, setPreview] = useState<string | null>(null);
-  const router = useRouter();
   const { form, submitHandler } = useZodForm<typeof userUpdateSchema>(
     userUpdateSchema,
     {
       onSubmit: (data) => {
-        const upload = axiosCSR().patch(`/auth/${user?.id}`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const payload = objectToFormData(data);
+        const upload = userUpdate(payload);
 
-        axiosToast(upload, (e) => {
-          console.log(e);
-          setUser(e);
-        });
+        actionToast(upload, () => {}, "Updating...");
       },
       defaultValues: user || undefined,
     },
@@ -64,9 +58,9 @@ export default function UserUpdateForm() {
           <div className="space-y-2">
             <Label>Email</Label>
             <Input {...register("email")} placeholder="Enter your email" />
-            {errors.name && (
+            {errors.email && (
               <p className="text-sm text-red-500">
-                {String(errors.name.message)}
+                {String(errors.email.message)}
               </p>
             )}
           </div>

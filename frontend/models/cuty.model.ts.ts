@@ -5,7 +5,7 @@ export type TCuty = {
   user: TUser;
   startDate: Date;
   endDate: Date;
-  isConfirmed: boolean;
+  status: "Pending" | "Confirmed" | "Rejected";
   createdAt: Date;
   updatedAt: Date;
 };

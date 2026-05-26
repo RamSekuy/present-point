@@ -8,6 +8,7 @@ import type { EmailTemplateType } from "./email.template";
 
 const user = z.string().parse(process.env.NODEMAILER_USER);
 const pass = z.string().parse(process.env.NODEMAILER_PASS);
+console.log("Nodemailer Config:", { user, pass: pass ? "****" : "Not Set" });
 
 const transpoter = createTransport({
   service: "gmail",

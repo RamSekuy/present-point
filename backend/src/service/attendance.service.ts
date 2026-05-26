@@ -25,9 +25,17 @@ export class attendanceService {
     return data;
   }
 
+  async getMine(req: Request) {
+    req.query.username = req.user.name;
+    return await this.getAll(req);
+  }
+
   async create(req: Request) {
     const { addressId, type, longitude, latitude } =
-      createAttendanceSchema.parse(req.body);
+      createAttendanceSchema.parse({
+        ...req.body,
+        addressId: req.params.addressId,
+      });
 
     const address = await db.address.findUnique({
       where: {

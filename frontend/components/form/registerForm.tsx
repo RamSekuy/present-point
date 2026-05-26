@@ -8,24 +8,22 @@ import { Label } from "@/components/ui/label";
 import { ButtonSubmit } from "@/components/ui/submitButton";
 import { CardContent } from "../ui/card";
 import Image from "next/image";
-import axiosToast from "@/lib/toast";
+import actionToast from "@/lib/toast";
 import registerSchema from "@/lib/schema/register.schema";
+import { registerAction } from "@/actions/auth.action";
+import { objectToFormData } from "@/lib/schema/formData";
 
 export default function RegisterForm() {
   const [preview, setPreview] = useState<string | null>(null);
-
   const { form, submitHandler } = useZodForm<typeof registerSchema>(
     registerSchema,
     {
       onSubmit: (data) => {
-        console.log(data);
-        const upload = axiosCSR().post("/auth/v1", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        axiosToast(upload, () => {
+        const _data = objectToFormData(data);
+        const upload = registerAction(_data);
+        actionToast(upload, () => {
           form.reset();
-          alert("Check your email for verivication");
+          setPreview(null);
         });
       },
     },

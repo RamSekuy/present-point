@@ -15,6 +15,8 @@ export class attendancARouter extends EntityRouter {
       blobUploader().single("image"),
       c.create,
     );
+
+    this.router.get("/me", userMiddleware.authValidate, c.getMine);
   }
 }
 

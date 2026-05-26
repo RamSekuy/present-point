@@ -40,8 +40,7 @@ const adminMenus = [
 
 export default function UserSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, setUser, logout } = useUser();
+  const { user, logout } = useUser();
   function isActive(href: string) {
     return pathname.endsWith(href);
   }
@@ -67,7 +66,7 @@ export default function UserSidebar() {
                   className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition
                   ${
                     active
-                      ? "bg-primary text-primary-foreground translate-x-2"
+                      ? "bg-primary text-primary-foreground translate-x-2 w-[90%]"
                       : "hover:bg-muted hover:translate-x-2"
                   }`}
                 >

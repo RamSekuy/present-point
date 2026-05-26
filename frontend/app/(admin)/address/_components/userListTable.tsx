@@ -4,20 +4,21 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modalContext";
 import { TUser } from "@/models/user.model";
 import { ColumnDef } from "@tanstack/react-table";
-import UsersSelectTable from "./usersSelectTable";
 import { useParams, useRouter } from "next/navigation";
-import { axiosCSR } from "@/lib/axios.csr";
-import axiosToast from "@/lib/toast";
+import actionToast from "@/lib/toast";
+import { removeUserFromAddressAction } from "@/actions/address.action";
 
 type Props = {
   users: TUser[];
+  children: React.ReactNode;
 };
 
-export default function UserListTable({ users }: Props) {
+export default function UserListTable({ users, children }: Props) {
   const { refresh } = useRouter();
+  const { slug } = useParams();
   const removeUserFromAddress = (userId: string) => {
-    const p = axiosCSR().delete(`/userAddressAllow/${userId}`);
-    axiosToast(p, () => {
+    const p = removeUserFromAddressAction(slug as string, userId);
+    actionToast(p, () => {
       refresh();
     });
   };
@@ -48,20 +49,12 @@ export default function UserListTable({ users }: Props) {
       ),
     },
   ];
-
-  const { slug } = useParams();
   const { open } = useModal();
   return (
     <DataTable
       renderTop={() => (
         <div className="w-full flex justify-end py-2">
-          <Button
-            onClick={() =>
-              open(<UsersSelectTable addressId={slug as string} />)
-            }
-          >
-            Add User to Location
-          </Button>
+          <Button onClick={() => open(children)}>Add User to Location</Button>
         </div>
       )}
       columns={columns}

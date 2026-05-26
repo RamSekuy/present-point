@@ -4,16 +4,16 @@ import loginSchema from "@/lib/schema/login.schema";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import useZodForm from "@/hooks/useZodForm";
-import { axiosCSR } from "@/lib/axios.csr";
 import { ButtonSubmit } from "../ui/submitButton";
 import { useRouter } from "next/navigation";
 import axiosToast from "@/lib/toast";
+import { loginAction } from "@/actions/auth.action";
 
 export default function LoginForm() {
   const { push } = useRouter();
   const { form, submitHandler } = useZodForm<typeof loginSchema>(loginSchema, {
     onSubmit: (data) => {
-      const p = axiosCSR().post("/auth/v2", data);
+      const p = loginAction(data);
       axiosToast(p, () => {
         push("/dashboard");
       });

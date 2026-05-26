@@ -2,31 +2,25 @@ import NavTop from "@/components/navTop";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import UserSidebar from "@/components/userSidebar";
 import { UserProvider } from "@/contexts/user.context";
-import { cookies } from "next/headers";
+import { QRProvider } from "@/contexts/qr.context";
+import { axiosSSR } from "@/lib/axios.ssr";
 import { ReactNode } from "react";
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default async function Layout({ children }: { children: ReactNode }) {
+  const { data } = await axiosSSR().get("/auth/me");
   return (
-    <UserProvider cookie={cookie()}>
-      <SidebarProvider className="max-w-max">
-        <UserSidebar />
-        <NavTop />
-      </SidebarProvider>
-      <main className="flex flex-col w-full overflow-auto first:max-h-24">
-        <section className="py-16 min-h-screen bg-[#eaeaea]">
-          {children}
-        </section>
-      </main>
+    <UserProvider initUser={data.data}>
+      <QRProvider>
+        <SidebarProvider className="max-w-max">
+          <UserSidebar />
+          <NavTop />
+        </SidebarProvider>
+        <main className="flex flex-col w-full overflow-auto first:max-h-24">
+          <section className="py-16 min-h-screen bg-[#eaeaea]">
+            {children}
+          </section>
+        </main>
+      </QRProvider>
     </UserProvider>
   );
 }
-
-const cookie = async () => {
-  const c = await cookies();
-  const aauth = c.get("aauth");
-  const rauth = c.get("rauth");
-  return {
-    rauth,
-    aauth,
-  };
-};

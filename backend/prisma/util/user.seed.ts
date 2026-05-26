@@ -1,5 +1,5 @@
 import { hashPassword } from "../../src/lib/bcrypt";
-import db from "../..//src/lib/prisma";
+import db from "../../src/lib/prisma";
 import { createImage } from "./image";
 const user = {
   name: "Pria Solo",
@@ -12,7 +12,7 @@ const user = {
 export const insertUser = async () => {
   const image = await createImage("prisma/util/default.jpg");
 
-  await db.user.create({
+  return await db.user.create({
     data: {
       ...user,
       password: await hashPassword(user.password),

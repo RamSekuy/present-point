@@ -8,7 +8,13 @@ export class UserService {
   async getAll(req: Request) {
     const { skip, take } = querySchema.parse(req.query);
     return await db.user.findMany({
-      where: {},
+      where: {
+        userAddressAllow: {
+          none: {
+            addressId: stringSchema.parse(req.query.notAddressId),
+          },
+        },
+      },
       include: { userAddressAllow: true },
       skip,
       take,

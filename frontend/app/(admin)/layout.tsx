@@ -2,12 +2,14 @@ import NavTop from "@/components/navTop";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import UserSidebar from "@/components/userSidebar";
 import { UserProvider } from "@/contexts/user.context";
+import { axiosSSR } from "@/lib/axios.ssr";
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default async function Layout({ children }: { children: ReactNode }) {
+  const { data } = await axiosSSR().get("/auth/me");
   return (
-    <UserProvider cookie={cookie()}>
+    <UserProvider initUser={data.data}>
       <SidebarProvider className="max-w-max">
         <UserSidebar />
         <NavTop />

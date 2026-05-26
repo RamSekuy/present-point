@@ -23,6 +23,10 @@ export class App {
   }
 
   private routes() {
+    this.app.use("/", (req, res, next) => {
+      console.log(req.method, req.path);
+      next();
+    });
     this.app.use("/auth", authRouter.getRouter);
     this.app.use("/user", userRouter.getRouter);
     this.app.use("/image", imageRouter.getRouter);
@@ -35,6 +39,7 @@ export class App {
   private errorHandler() {
     this.app.use(
       (error: unknown, req: Request, res: Response, next: NextFunction) => {
+        console.error(error);
         if (error instanceof ZodError) {
           console.log(error.message);
           res.status(401).send({

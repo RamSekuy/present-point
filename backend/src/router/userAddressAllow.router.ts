@@ -9,6 +9,7 @@ export class UserAddressAllowRouter extends EntityRouter {
   }
   private initializedRoutes(): void {
     this.router.post("/:addressId", userMiddleware.isAdmin, c.create);
+    this.router.delete("/:addressId/:userId", userMiddleware.isAdmin, c.delete);
   }
 }
 

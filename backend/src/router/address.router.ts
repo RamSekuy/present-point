@@ -13,6 +13,7 @@ class AddressRouter extends EntityRouter {
     this.router.get("/", this.c.getAll);
     this.router.get("/:id", this.c.getById);
     this.router.post("/c", this.c.create);
+    this.router.patch("/:id", this.c.update);
     this.router.delete("/:id", this.c.delete);
   }
 }

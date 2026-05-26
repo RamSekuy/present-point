@@ -30,10 +30,20 @@ class CutyController {
       next(error);
     }
   }
+
   async confirm(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await cutyService.confirm(req);
       sendResponse(res, "Success Confirm Cuty", data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async reject(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await cutyService.reject(req);
+      sendResponse(res, "Success Reject Cuty", data);
     } catch (error) {
       next(error);
     }

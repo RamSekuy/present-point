@@ -16,6 +16,10 @@ class AuthRouter extends EntityRouter {
     this.router.post(
       "/v1",
       blobUploader().single("image"),
+      (req, res, next) => {
+        console.log(req.body);
+        next();
+      },
       this.c.register.bind(this.c),
     );
     this.router.post("/v1/:token", this.c.verifyEmail.bind(this.c));

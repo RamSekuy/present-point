@@ -1,79 +1,38 @@
 "use client";
+import { logoutAction } from "@/actions/auth.action";
 import Loading from "@/components/loading";
-import { axiosCSR } from "@/lib/axios.csr";
-import axiosToast from "@/lib/toast";
+import actionToast from "@/lib/toast";
 import { TUser } from "@/models/user.model";
-import { AxiosError } from "axios";
-import { deleteCookie } from "cookies-next/client";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useRouter } from "next/navigation";
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-  use,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 type User = TUser;
 
 type UserContextType = {
   user: User | null;
-  setUser: (user: User | null) => void;
   logout: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-type TCookie = Promise<{
-  aauth?: RequestCookie;
-  rauth?: RequestCookie;
-}>;
+type UserProviderProps = { children: ReactNode; initUser?: User };
 
-type UserProviderProps = { children: ReactNode; cookie: TCookie };
-
-export function UserProvider({ children, cookie }: UserProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const c = use(cookie);
-  const rauthToken = c.rauth?.value;
-  const aauthToken = c.aauth?.value;
+export function UserProvider({ children, initUser }: UserProviderProps) {
   const { push } = useRouter();
-
-  const updateUserData = async () => {
-    const getUserData = async () => await axiosCSR(aauthToken).get("/auth/me");
-    const getAccessToken = async () =>
-      await axiosCSR().post("/auth/v0", undefined, {
-        headers: { Authorization: `Bearer ${rauthToken}` },
-      });
-    getUserData()
-      .then((e) => setUser(e.data.data))
-      .catch((e: AxiosError<{ message?: string }>) => {
-        const msg = e.response?.data.message || e.message;
-        const errMSG = ["jwt expired", "invalid token", "jwt malformed"];
-        const jwtMalformed = errMSG.some((m) => msg.toLowerCase().includes(m));
-        console.log(jwtMalformed);
-        if (jwtMalformed) {
-          (axiosToast(getAccessToken(), () => {
-            axiosToast(getUserData(), (e) => setUser(e.data?.data));
-          }),
-            e.message + ": Revalidating User...");
-        }
-      });
-  };
-  useEffect(() => {
-    rauthToken ? updateUserData() : push("/auth");
-  }, []);
-
   const logout = () => {
-    setUser(null);
-    deleteCookie("rauth");
-    deleteCookie("aauth");
-    push("/auth");
+    actionToast(
+      logoutAction(),
+      () => {
+        push("/auth");
+      },
+      "Logging out...",
+    );
   };
+  if (!initUser) throw new Error("initUser is required for UserProvider");
+  const [user] = useState<User>(initUser);
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, logout }}>
       {!user ? (
         <div className="w-full h-dvh flex justify-center items-center">
           <Loading label="Getting User Data" />

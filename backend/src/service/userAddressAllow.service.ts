@@ -5,6 +5,7 @@ import { Request } from "express";
 
 export class UserAddressAllowService {
   async create(req: Request) {
+    console.log(req.body);
     const userId = stringSchema.parse(req.body.userId);
     const addressId = stringSchema.parse(req.params.addressId);
     const data = db.userAddressAllow.create({
@@ -15,8 +16,9 @@ export class UserAddressAllowService {
   }
 
   async delete(req: Request) {
-    const userId = req.user.id;
     const addressId = stringSchema.parse(req.params.addressId);
+    const userId = stringSchema.parse(req.params.userId);
+    console.log(addressId, userId);
     return db.userAddressAllow.delete({
       where: { userId_addressId: { userId, addressId } },
     });
